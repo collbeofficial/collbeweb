@@ -3595,3 +3595,24 @@ button, a { cursor: pointer; }
     0 15px 24px rgba(0,0,0,.17),
     0 0 24px color-mix(in srgb,var(--project-accent) 38%,transparent 62%) !important;
 }
+
+/* ================= V26 MOBILE SWIPE TUNING ================= */
+.member-stage,
+.viewer-scroll-stage {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+@media (pointer: coarse), (max-width: 720px) {
+  .member-stage,
+  .viewer-scroll-stage {
+    /* Horizontal movement is handled directly by the carousel JS so
+       short phone swipes can travel farther without fighting page scroll. */
+    touch-action: pan-y pinch-zoom;
+  }
+
+  .member-progress,
+  .viewer-progress {
+    min-height: 12px;
+  }
+}

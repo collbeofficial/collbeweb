@@ -310,11 +310,13 @@
       btn.dataset.index = String(i);
       btn.setAttribute("aria-label", project.title);
       btn.innerHTML = `<img src="${project.logo}" alt="" draggable="false" />`;
-      btn.addEventListener("pointerenter", () => {
+      btn.addEventListener("pointerenter", e => {
+        if (e.pointerType === "touch") return;
         works.hoveringLogo = true;
         focusProject(i);
       });
-      btn.addEventListener("pointerleave", () => {
+      btn.addEventListener("pointerleave", e => {
+        if (e.pointerType === "touch") return;
         works.hoveringLogo = false;
         scheduleWorksSnap();
       });
@@ -434,8 +436,12 @@
 
   function worksLoop() {
     if (!works.active || currentRoute !== "works") return;
-    // No unattended auto-spin: the composition stays clickable until the user moves it.
-    works.rotation += (works.targetRotation - works.rotation) * .065;
+    // Same behavior as the magazine orbit: it keeps moving on its own,
+    // pauses while the user is actively focusing/interacting, then resumes.
+    if (!works.hoveringLogo && performance.now() - works.lastInput > 1400) {
+      works.targetRotation += .00175;
+    }
+    works.rotation += (works.targetRotation - works.rotation) * .072;
     layoutWorks();
     works.raf = requestAnimationFrame(worksLoop);
   }
@@ -812,6 +818,9 @@
     let pointerId = null;
     let pointerStartX = 0;
     let scrollStartX = 0;
+    let dragStartIndex = 0;
+    let dragPointerType = "mouse";
+    let dragMovedX = 0;
 
     const syncVideos = () => {
       videos.forEach(video => {
@@ -874,6 +883,9 @@
       pointerId = e.pointerId;
       pointerStartX = e.clientX;
       scrollStartX = stage.scrollLeft;
+      dragStartIndex = Math.round(scrollStartX / Math.max(slideWidth, 1));
+      dragPointerType = e.pointerType || "mouse";
+      dragMovedX = 0;
       stage.classList.add('is-dragging');
       stage.setPointerCapture?.(pointerId);
     };
@@ -881,16 +893,34 @@
     const onPointerMove = e => {
       if (!isDragging) return;
       const dx = e.clientX - pointerStartX;
-      stage.scrollLeft = scrollStartX - dx;
+      dragMovedX = dx;
+      // iPhone/Android finger movement is physically much shorter than mouse drag.
+      // Boost only coarse touch input; desktop mouse sensitivity stays unchanged.
+      const multiplier = dragPointerType === 'touch' ? 2.15 : 1;
+      stage.scrollLeft = scrollStartX - dx * multiplier;
       requestSync();
     };
 
     const endDrag = () => {
       if (!isDragging) return;
+      const wasTouch = dragPointerType === 'touch';
+      const moved = dragMovedX;
       isDragging = false;
       stage.classList.remove('is-dragging');
       pointerId = null;
-      requestSync();
+
+      if (wasTouch) {
+        // A short, intentional swipe is enough to move one full page on phones.
+        // During the gesture the track still follows the finger continuously.
+        if (Math.abs(moved) >= 22) {
+          goToSlide(dragStartIndex + (moved < 0 ? 1 : -1));
+        } else {
+          updateMeasurements();
+          goToSlide(Math.round(stage.scrollLeft / Math.max(slideWidth, 1)));
+        }
+      } else {
+        requestSync();
+      }
     };
 
     stage.addEventListener('pointerdown', onPointerDown);
@@ -1162,6 +1192,9 @@
     let isDragging = false;
     let dragStartX = 0;
     let scrollStartX = 0;
+    let dragStartIndex = 0;
+    let dragPointerType = "mouse";
+    let dragMovedX = 0;
 
     const syncVideos = () => {
       videos.forEach(video => {
@@ -1222,19 +1255,37 @@
       isDragging = true;
       dragStartX = e.clientX;
       scrollStartX = stage.scrollLeft;
+      dragStartIndex = Math.round(scrollStartX / Math.max(pageWidth, 1));
+      dragPointerType = e.pointerType || "mouse";
+      dragMovedX = 0;
       stage.classList.add('is-dragging');
       stage.setPointerCapture?.(e.pointerId);
     };
     const onPointerMove = e => {
       if (!isDragging) return;
-      stage.scrollLeft = scrollStartX - (e.clientX - dragStartX);
+      const dx = e.clientX - dragStartX;
+      dragMovedX = dx;
+      const multiplier = dragPointerType === 'touch' ? 2.15 : 1;
+      stage.scrollLeft = scrollStartX - dx * multiplier;
       requestSync();
     };
     const endDrag = () => {
       if (!isDragging) return;
+      const wasTouch = dragPointerType === 'touch';
+      const moved = dragMovedX;
       isDragging = false;
       stage.classList.remove('is-dragging');
-      requestSync();
+
+      if (wasTouch) {
+        if (Math.abs(moved) >= 22) {
+          goTo(dragStartIndex + (moved < 0 ? 1 : -1));
+        } else {
+          updateMeasurements();
+          goTo(Math.round(stage.scrollLeft / Math.max(pageWidth, 1)));
+        }
+      } else {
+        requestSync();
+      }
     };
     const onResize = () => goTo(viewerPageIndex, 'auto');
 
