@@ -13,3 +13,12 @@
 
 
 Updated in v20_compact: added magazines 10-12.
+
+
+## v28 updates
+- Project 2 김유민 title: 우리 사이에
+- Project 2 이지은 duplicate cover page removed
+- Magazine 3 restored from supplied archive (9 supplied 4:5 pages, no crop)
+- Cache bust updated to v28
+
+- Magazine 03 page 5 added and page order corrected (v29 cache-bust).

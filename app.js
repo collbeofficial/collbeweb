@@ -740,7 +740,7 @@
     },
     2: {
       "권보경": "무형의 단어들 (Shapeless Words)",
-      "김유민": "우리 사이 틈에",
+      "김유민": "우리 사이에",
       "김지현": "someone",
       "김창수": "The Keepsake",
       "이지은": "시선 視線 | 눈이 가는 길",
@@ -843,8 +843,12 @@
 
     const updateMeasurements = () => {
       const stageHeight = stage.clientHeight || 520;
-      stage.style.setProperty('--member-page-width', `${Math.round(stageHeight * 0.8)}px`);
-      slideWidth = slides[0]?.getBoundingClientRect().width || stage.clientWidth || 1;
+      const stageWidth = stage.clientWidth || Math.round(stageHeight * 0.8);
+      // Every artwork is a 4:5 page. On phones the page must never be wider
+      // than the visible stage, otherwise Safari shows only the middle crop.
+      const pageWidth = Math.max(1, Math.floor(Math.min(stageWidth, stageHeight * 0.8)));
+      stage.style.setProperty('--member-page-width', `${pageWidth}px`);
+      slideWidth = pageWidth;
     };
 
     const syncFromScroll = () => {
@@ -879,6 +883,9 @@
     stage.addEventListener('wheel', onWheel, { passive: false });
 
     const onPointerDown = e => {
+      // Use Safari/Android native inertial scrolling for touch. It is much
+      // smoother and lets two adjacent pages remain visible mid-swipe.
+      if (e.pointerType === 'touch') return;
       isDragging = true;
       pointerId = e.pointerId;
       pointerStartX = e.clientX;
@@ -894,33 +901,18 @@
       if (!isDragging) return;
       const dx = e.clientX - pointerStartX;
       dragMovedX = dx;
-      // iPhone/Android finger movement is physically much shorter than mouse drag.
-      // Boost only coarse touch input; desktop mouse sensitivity stays unchanged.
-      const multiplier = dragPointerType === 'touch' ? 2.15 : 1;
-      stage.scrollLeft = scrollStartX - dx * multiplier;
+      stage.scrollLeft = scrollStartX - dx;
       requestSync();
     };
 
     const endDrag = () => {
       if (!isDragging) return;
-      const wasTouch = dragPointerType === 'touch';
-      const moved = dragMovedX;
       isDragging = false;
       stage.classList.remove('is-dragging');
       pointerId = null;
-
-      if (wasTouch) {
-        // A short, intentional swipe is enough to move one full page on phones.
-        // During the gesture the track still follows the finger continuously.
-        if (Math.abs(moved) >= 22) {
-          goToSlide(dragStartIndex + (moved < 0 ? 1 : -1));
-        } else {
-          updateMeasurements();
-          goToSlide(Math.round(stage.scrollLeft / Math.max(slideWidth, 1)));
-        }
-      } else {
-        requestSync();
-      }
+      // No page snapping: preserve the exact in-between position so the end
+      // of the previous page and start of the next can be read together.
+      requestSync();
     };
 
     stage.addEventListener('pointerdown', onPointerDown);
@@ -1209,8 +1201,11 @@
 
     const updateMeasurements = () => {
       const stageHeight = stage.clientHeight || Math.min(window.innerHeight * .82, 760);
-      stage.style.setProperty('--viewer-page-width', `${Math.round(stageHeight * 0.8)}px`);
-      pageWidth = slidesEls[0]?.getBoundingClientRect().width || stage.clientWidth || 1;
+      const stageWidth = stage.clientWidth || Math.round(stageHeight * 0.8);
+      // Keep the complete 4:5 magazine page inside the phone viewport.
+      const measuredWidth = Math.max(1, Math.floor(Math.min(stageWidth, stageHeight * 0.8)));
+      stage.style.setProperty('--viewer-page-width', `${measuredWidth}px`);
+      pageWidth = measuredWidth;
     };
 
     const setActive = index => {
@@ -1251,6 +1246,7 @@
       requestSync();
     };
     const onPointerDown = e => {
+      if (e.pointerType === 'touch') return;
       if (e.button !== 0) return;
       isDragging = true;
       dragStartX = e.clientX;
@@ -1265,27 +1261,14 @@
       if (!isDragging) return;
       const dx = e.clientX - dragStartX;
       dragMovedX = dx;
-      const multiplier = dragPointerType === 'touch' ? 2.15 : 1;
-      stage.scrollLeft = scrollStartX - dx * multiplier;
+      stage.scrollLeft = scrollStartX - dx;
       requestSync();
     };
     const endDrag = () => {
       if (!isDragging) return;
-      const wasTouch = dragPointerType === 'touch';
-      const moved = dragMovedX;
       isDragging = false;
       stage.classList.remove('is-dragging');
-
-      if (wasTouch) {
-        if (Math.abs(moved) >= 22) {
-          goTo(dragStartIndex + (moved < 0 ? 1 : -1));
-        } else {
-          updateMeasurements();
-          goTo(Math.round(stage.scrollLeft / Math.max(pageWidth, 1)));
-        }
-      } else {
-        requestSync();
-      }
+      requestSync();
     };
     const onResize = () => goTo(viewerPageIndex, 'auto');
 

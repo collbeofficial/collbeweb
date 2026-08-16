@@ -3616,3 +3616,57 @@ button, a { cursor: pointer; }
     min-height: 12px;
   }
 }
+
+
+/* ================= V27 MOBILE 4:5 + CONTINUOUS SWIPE ================= */
+.member-slide-track,
+.viewer-scroll-track {
+  align-items: center !important;
+  gap: 0 !important;
+}
+.member-slide,
+.viewer-page {
+  height: calc(var(--member-page-width, var(--viewer-page-width, 320px)) * 1.25);
+  max-height: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+}
+.viewer-page {
+  height: calc(var(--viewer-page-width) * 1.25);
+}
+.member-slide {
+  height: calc(var(--member-page-width) * 1.25);
+}
+.member-slide-media,
+.viewer-page-media {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+.member-stage,
+.viewer-scroll-stage {
+  scroll-snap-type: none !important;
+  overscroll-behavior-x: contain;
+}
+@media (pointer: coarse), (max-width: 720px) {
+  .member-stage,
+  .viewer-scroll-stage {
+    /* Native inertial horizontal scrolling = continuous, not page snapping. */
+    touch-action: pan-x pan-y pinch-zoom !important;
+    scroll-behavior: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .viewer-frame {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+  .member-carousel-left {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .member-stage,
+  .member-progress {
+    width: 100% !important;
+  }
+}
