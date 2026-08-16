@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>collective behavior</title>
+  <meta name="description" content="collective behavior — works, magazine, about" />
+  <link rel="preload" href="assets/video/intro-poster.jpg" as="image" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" /></noscript>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section class="page intro-page is-active" data-page="intro" aria-label="Intro">
+      <button id="introEnter" class="intro-enter" type="button" aria-label="Enter collective behavior">
+        <video id="introVideo" class="intro-video" autoplay muted loop playsinline preload="auto" poster="assets/video/intro-poster.jpg">
+          <source src="assets/video/intro.mp4" type="video/mp4" />
+        </video>
+        <span class="intro-hint"><strong>welcome to collective behavior</strong><em>click to enter</em></span>
+      </button>
+    </section>
+
+    <section class="page main-page" data-page="main" aria-label="Main">
+      <canvas id="morphCanvas" class="morph-canvas" aria-hidden="true"></canvas>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="#works" data-route="works">works</a>
+        <a href="#magazine" data-route="magazine">magazine</a>
+        <a href="#about" data-route="about">about</a>
+      </nav>
+      <button class="corner-mark" type="button" data-route="main" aria-label="Home">collective behavior</button>
+    </section>
+
+    <section class="page content-page works-page" data-page="works" aria-label="Works">
+      <header class="page-header">
+        <button class="wordmark" type="button" data-route="main">collective behavior</button>
+        <nav class="top-nav inline-nav" aria-label="Primary">
+          <a class="is-current" href="#works" data-route="works">works</a>
+          <a href="#magazine" data-route="magazine">magazine</a>
+          <a href="#about" data-route="about">about</a>
+        </nav>
+      </header>
+
+      <main class="works-stage" id="worksStage">
+        <div class="works-kicker">WORKS</div>
+        <h1 id="worksTitle" class="works-title" aria-live="polite"></h1>
+        <div class="works-orbit" id="worksOrbit" aria-label="Project carousel"></div>
+        <p class="works-instruction">move your mouse · scroll · click the focused logo</p>
+      </main>
+    </section>
+
+    <section class="page content-page project-page" data-page="project" aria-label="Project detail">
+      <header class="page-header">
+        <button class="wordmark" type="button" data-route="main">collective behavior</button>
+        <nav class="top-nav inline-nav" aria-label="Primary">
+          <a class="is-current" href="#works" data-route="works">works</a>
+          <a href="#magazine" data-route="magazine">magazine</a>
+          <a href="#about" data-route="about">about</a>
+        </nav>
+      </header>
+      <main class="project-layout">
+        <section class="project-logo-column">
+          <button class="back-link" type="button" data-route="works">← works</button>
+          <div class="puzzle-wrap" id="puzzleWrap" aria-label="Member work puzzle"></div>
+          <div class="member-hover-label" id="memberHoverLabel" aria-live="polite">hover a piece</div>
+        </section>
+        <article class="project-copy" id="projectCopy"></article>
+      </main>
+    </section>
+
+    <section class="page content-page member-page" data-page="member" aria-label="Member work">
+      <header class="page-header">
+        <button class="wordmark" type="button" data-route="main">collective behavior</button>
+        <nav class="top-nav inline-nav" aria-label="Primary">
+          <a class="is-current" href="#works" data-route="works">works</a>
+          <a href="#magazine" data-route="magazine">magazine</a>
+          <a href="#about" data-route="about">about</a>
+        </nav>
+      </header>
+      <main class="member-layout" id="memberLayout"></main>
+    </section>
+
+    <section class="page content-page magazine-page" data-page="magazine" aria-label="Magazine">
+      <header class="page-header">
+        <button class="wordmark" type="button" data-route="main">collective behavior</button>
+        <nav class="top-nav inline-nav" aria-label="Primary">
+          <a href="#works" data-route="works">works</a>
+          <a class="is-current" href="#magazine" data-route="magazine">magazine</a>
+          <a href="#about" data-route="about">about</a>
+        </nav>
+      </header>
+
+      <main class="magazine-layout">
+        <div class="magazine-heading-row">
+          <div>
+            <div class="section-kicker">MAGAZINE</div>
+            <h1 class="magazine-heading">magazine</h1>
+          </div>
+          <p class="magazine-help">drag / wheel to browse · click to open</p>
+        </div>
+        <div class="magazine-shelf" id="magazineShelf" aria-label="Magazine covers"></div>
+      </main>
+
+      <div class="mag-viewer" id="magViewer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Magazine viewer">
+        <button class="viewer-close" id="viewerClose" type="button" aria-label="Close viewer">×</button>
+        <button class="viewer-arrow viewer-prev" id="viewerPrev" type="button" aria-label="Previous page">←</button>
+        <div class="viewer-frame" id="viewerFrame"></div>
+        <button class="viewer-arrow viewer-next" id="viewerNext" type="button" aria-label="Next page">→</button>
+        <div class="viewer-meta" id="viewerMeta"></div>
+      </div>
+    </section>
+
+    <section class="page content-page about-page" data-page="about" aria-label="About">
+      <header class="about-ref-header">
+        <button type="button" data-route="main">← home</button>
+        <span>collective behavior</span>
+      </header>
+
+      <main class="about-layout">
+        <section class="about-panel about-hero-dark">
+          <div class="about-hero-kicker">ABOUT</div>
+          <div class="about-hero-wordmark">collective behavior</div>
+          <div class="about-hero-ko">집단행동</div>
+        </section>
+
+        <section class="about-panel about-welcome-grid has-guides">
+          <h1>세상의 모든<br>집단행동원분들<br>만나서 반갑습니다</h1>
+        </section>
+
+        <section class="about-panel about-definition has-guides">
+          <h2>집단<br>행동은...</h2>
+          <div class="about-copy-stack">
+            <p><b>집단행동(collective behavior)</b>은<br>서로 다른 개인들이 하나의 목표를 향해 나아가는<br>집합적 움직임을 지향합니다.</p>
+            <p>개인의 고유한 시선이 하나로 모여 <b>새로운 담론</b>을 제시하고,<br>이를 <b>기록하며 공유하는 것</b>을 목표로 합니다.</p>
+          </div>
+        </section>
+
+        <section class="about-panel about-do has-guides">
+          <h2>이런 것을<br>합니다...</h2>
+          <div class="about-copy-stack">
+            <p><b>미술, 전시, 미학 이론, 도서, 패션 등</b><br>예술 내 분야의 탐구를 바탕으로</p>
+            <p><b>에세이나 소설, 인터뷰, 개개인의 발칙한 작업, 그래픽 등</b>의<br>창작물을 제작해 매거진을 발행합니다.</p>
+          </div>
+        </section>
+
+        <section class="about-panel about-archive has-guides">
+          <div class="about-archive-grid">
+            <div class="about-archive-row">
+              <h2><span>소음채집</span><span>프로젝트</span></h2>
+              <div class="about-copy-stack about-archive-copy archive-copy-noise">
+                <p>소음채집 활동 중 발견하는<br>미술, 전시, 미학 이론, 도서, 패션 등<br>예술 전반의 흥미로운 인사이트를 공유합니다.</p>
+              </div>
+            </div>
+            <div class="about-archive-row">
+              <h2><span>수집과 실험</span><span>아카이브</span></h2>
+              <div class="about-copy-stack about-archive-copy archive-copy-archive">
+                <p>영상, 사진, 에세이, 그래픽 등<br>집단행동원들의 창작물을 선보입니다.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-panel about-join has-guides">
+          <h2>우리 함께<br>집단행동원이<br>되어</h2>
+          <div class="about-copy-stack about-join-copy"></div>
+        </section>
+
+        <section class="about-panel about-call has-guides">
+          <h2>집단활동을<br>합시다%!</h2>
+        </section>
+
+        <section class="about-panel about-identity has-guides">
+          <div class="about-identity-lockup">
+            <span class="identity-logo-mark" aria-hidden="true"></span>
+            <span class="identity-wordmark">collective<br>behavior</span>
+            <strong>예술 실험<br>실천 집단</strong>
+            <small>흥미로운 아이디어는 @collbeofficial</small>
+          </div>
+        </section>
+
+        <section class="about-panel contact-section has-guides" id="contact">
+          <div class="contact-block">
+            <h2>Contact</h2>
+            <a href="mailto:collbeofficial@gmail.com">collbeofficial@gmail.com</a>
+            <a href="https://www.instagram.com/collbeofficial/" target="_blank" rel="noreferrer">@collbeofficial</a>
+          </div>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <script src="content.js"></script>
+  <script src="logo-points.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
