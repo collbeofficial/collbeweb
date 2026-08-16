@@ -22,3 +22,5 @@ Updated in v20_compact: added magazines 10-12.
 - Cache bust updated to v28
 
 - Magazine 03 page 5 added and page order corrected (v29 cache-bust).
+
+- v30: main-page morph begins after ~0.45s instead of ~2.6s; early morph timing accelerated.

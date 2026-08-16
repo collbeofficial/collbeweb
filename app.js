@@ -192,30 +192,32 @@
   function easeInOut(t) { return t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2; }
 
   function getMorphTarget(i, elapsed) {
-    const cycle = 14200;
+    // v30: get the main animation moving almost immediately.
+    // Previously the text stayed still for 2.6s, which made the opening feel slow.
+    const cycle = 12000;
     const t = elapsed % cycle;
     const text = morph.textTargets[i] || { x: morph.width / 2, y: morph.height / 2 };
     const logo = morph.logoTargets[i] || text;
     const scatter = morph.scatterTargets[i] || text;
 
     let from, to, k;
-    if (t < 2600) return text;
-    if (t < 3900) {
-      k = easeInOut((t - 2600) / 1300); from = text; to = scatter;
-    } else if (t < 6000) {
-      k = easeInOut((t - 3900) / 2100); from = scatter; to = logo;
-    } else if (t < 9000) {
-      const angle = ((t - 6000) / 3000) * Math.PI * 2;
+    if (t < 450) return text;
+    if (t < 1450) {
+      k = easeInOut((t - 450) / 1000); from = text; to = scatter;
+    } else if (t < 3300) {
+      k = easeInOut((t - 1450) / 1850); from = scatter; to = logo;
+    } else if (t < 6800) {
+      const angle = ((t - 3300) / 3500) * Math.PI * 2;
       const dx = logo.x - morph.width / 2;
       const dy = logo.y - morph.height / 2;
       return {
         x: morph.width / 2 + dx * Math.cos(angle) - dy * Math.sin(angle),
         y: morph.height / 2 + dx * Math.sin(angle) + dy * Math.cos(angle)
       };
-    } else if (t < 10300) {
-      k = easeInOut((t - 9000) / 1300); from = logo; to = scatter;
-    } else if (t < 12600) {
-      k = easeInOut((t - 10300) / 2300); from = scatter; to = text;
+    } else if (t < 7850) {
+      k = easeInOut((t - 6800) / 1050); from = logo; to = scatter;
+    } else if (t < 10000) {
+      k = easeInOut((t - 7850) / 2150); from = scatter; to = text;
     } else return text;
     return { x: lerp(from.x, to.x, k), y: lerp(from.y, to.y, k) };
   }
