@@ -3670,3 +3670,68 @@ button, a { cursor: pointer; }
     width: 100% !important;
   }
 }
+
+
+/* ================= V31 MEMBER LINKS + MOBILE BACK FIX ================= */
+.member-work-meta-row {
+  margin-top: clamp(14px, 2vh, 22px);
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  max-width: 100%;
+}
+.member-work-meta-row .member-member-title {
+  margin-top: 0;
+}
+.member-external-links {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+}
+.member-external-link {
+  color: inherit;
+  font-size: clamp(14px, 1.05vw, 18px);
+  line-height: 1.2;
+  font-weight: 520;
+  letter-spacing: -.02em;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+  opacity: .92;
+  transition: opacity .18s ease;
+}
+.member-external-link:hover,
+.member-external-link:focus-visible {
+  opacity: .58;
+}
+.project-logo-column .back-link {
+  z-index: 120;
+  pointer-events: auto;
+  touch-action: manipulation;
+  cursor: pointer;
+  padding: 12px 16px;
+  margin: -12px -16px;
+}
+@media (max-width: 720px) {
+  .member-work-meta-row {
+    display: grid;
+    gap: 10px;
+  }
+  .member-external-links {
+    display: flex;
+    gap: 8px 14px;
+  }
+  .member-external-link {
+    font-size: 15px;
+  }
+  .project-logo-column .back-link {
+    z-index: 999;
+    top: 18px;
+    left: 18px;
+    padding: 14px 18px;
+    margin: -14px -18px;
+  }
+}

@@ -731,7 +731,7 @@
 
   const MEMBER_WORK_TITLES = {
     1: {
-      "권보경": "우리는 형태 속의 나",
+      "권보경": "우리라는 형태 속의 나",
       "김유민": "우리가 되는 방식",
       "김지현": "〈헤어질 결심〉 프레임, 시선 그리고 그 속의 색",
       "김창수": "The Uniform",
@@ -748,7 +748,27 @@
       "이지은": "시선 視線 | 눈이 가는 길",
       "이현수": "Para-moji",
       "양정원": "모르겠어요😭",
-      "임사라": "이상 표현적인 초여름"
+      "임사라": "이상적인 초여름"
+    }
+  };
+
+  const MEMBER_WORK_LINKS = {
+    1: {
+      "이현수": [
+        { label: "Click to try the project", href: "https://mueleesu.github.io/The-Call-Room-Mobile/?fbclid=PAdGRleATu45hUREVYBNE-GXBkb2YCZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPMTI0MDI0NTc0Mjg3NDE0AAGnaxjBYE4jf4yBkiIa7LD_GMM5c9OgsSNAq-qz7rqdcbhfcN1f2_pJZNBsR9s_aem_mDMuFqQaVYAU2WT4sfIKXw#work-08" }
+      ],
+      "임사라": [
+        { label: "Click to try the project", href: "https://gorgeous-begonia-b4ca3b.netlify.app/" }
+      ]
+    },
+    2: {
+      "이현수": [
+        { label: "Click to try the project", href: "https://mueleesu.github.io/paramoji/" },
+        { label: "Read the paper", href: "https://docs.google.com/document/d/1uZsueAhJ6qDzHzHvZbm8XEVbFB3BBFMjQFBfwkWA6lE/edit?usp=drivesdk" }
+      ],
+      "임사라": [
+        { label: "Click to try the project", href: "https://collbeofficial.github.io/ideal-summer/" }
+      ]
     }
   };
 
@@ -765,6 +785,7 @@
     const root = document.getElementById("memberLayout");
     const assets = DATA.memberWorks?.[project.id]?.[member] || [];
     const memberTitle = MEMBER_WORK_TITLES[project.id]?.[member] || "";
+    const memberLinks = MEMBER_WORK_LINKS[project.id]?.[member] || [];
 
     if (!assets.length) {
       root.innerHTML = `
@@ -803,7 +824,11 @@
           <div class="member-info-bottom">
             <div class="member-slide-counter"><span id="memberCurrentSlide">01</span> / ${String(assets.length).padStart(2, '0')}</div>
             <h1>${member}</h1>
-            ${memberTitle ? `<div class="member-member-title">${memberTitle}</div>` : ''}
+            ${(memberTitle || memberLinks.length) ? `
+              <div class="member-work-meta-row">
+                ${memberTitle ? `<div class="member-member-title">${memberTitle}</div>` : ''}
+                ${memberLinks.length ? `<div class="member-external-links">${memberLinks.map(link => `<a class="member-external-link" href="${link.href}" target="_blank" rel="noopener noreferrer">${link.label}</a>`).join('')}</div>` : ''}
+              </div>` : ''}
           </div>
         </aside>
       </section>`;
